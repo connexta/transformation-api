@@ -167,6 +167,7 @@ pipeline {
                         } else {
                             sh 'mvn deploy -B -DskipTests -DretryFailedDeploymentCount=10 -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS'
                         }
+                    }
                 }
             }
         }
