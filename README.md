@@ -8,13 +8,13 @@
 * Set the MAVEN_OPTS variable with appropriate memory settings.
 
 ### How to build ###
-Clone the Transformation API code repository.
+Clone the ION Transformation API code repository.
 
 ```
-git clone git@github.com:connexta/transformation-api.git
+git clone git@github.com:connexta/ion-transformation-api.git
 ```
 
-Change to the root directory of the cloned transformation-api repository. Run the following command:
+Change to the root directory of the cloned ion-transformation-api repository. Run the following command:
 
 ```
 mvn clean install
