@@ -19,8 +19,8 @@ pipeline {
         LINUX_MVN_RANDOM = '-Djava.security.egd=file:/dev/./urandom'
         COVERAGE_EXCLUSIONS = '**/test/**/*,**/itests/**/*,**/*Test*,**/*.txt,**/*.xml'
         GITHUB_USERNAME = 'connexta'
-        GITHUB_REPONAME = 'transformation-api'
-	GITHUB_KEY = 'transformation-api-github-key'
+        GITHUB_REPONAME = 'ion-transformation-api'
+	GITHUB_KEY = 'ion-transformation-api-github-key'
     }
     parameters {
             booleanParam(name: 'RELEASE', defaultValue: false, description: 'Perform Release?')
