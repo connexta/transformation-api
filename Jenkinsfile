@@ -21,7 +21,7 @@ pipeline {
         COVERAGE_EXCLUSIONS = '**/test/**/*,**/itests/**/*,**/*Test*,**/*.txt,**/*.xml'
         GITHUB_USERNAME = 'connexta'
         GITHUB_REPONAME = 'ion-transformation-api'
-	      GITHUB_KEY = 'ion-transformation-api-github-key'
+        GITHUB_KEY = 'ion-transformation-api-github-key'
     }
     parameters {
             booleanParam(name: 'RELEASE', defaultValue: false, description: 'Perform Release?')
@@ -81,22 +81,22 @@ pipeline {
                 }
             }
             steps {
-                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'cx-oss-settings', mavenOpts: '${LINUX_MVN_RANDOM}') {
-                      sh 'mvn install -B -DskipTests $DISABLE_DOWNLOAD_PROGRESS_OPTS'
-                      sh 'mvn clean install -B -Dgib.enabled=true -Dgib.referenceBranch=/refs/remotes/origin/$CHANGE_TARGET $DISABLE_DOWNLOAD_PROGRESS_OPTS'
+                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'cx-oss-settings', mavenOpts: "${LINUX_MVN_RANDOM}") {
+                      sh "mvn install -B -DskipTests $DISABLE_DOWNLOAD_PROGRESS_OPTS"
+                      sh "mvn clean install -B -Dgib.enabled=true -Dgib.referenceBranch=/refs/remotes/origin/$CHANGE_TARGET $DISABLE_DOWNLOAD_PROGRESS_OPTS"
                 }
             }
         }
         stage('Full Build') {
             when { expression { env.CHANGE_ID == null } }
             steps {
-                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'cx-oss-settings', mavenOpts: '${LINUX_MVN_RANDOM}') {
+                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'cx-oss-settings', mavenOpts: "${LINUX_MVN_RANDOM}") {
                     script {
                         if (params.RELEASE == true) {
                             sh "mvn -B -Dtag=${env.RELEASE_TAG} -DreleaseVersion=${env.RELEASE_VERSION} -DdevelopmentVersion=${env.NEXT_VERSION} -Dgpg.secretKeyring=$ION_GPG_KEYRING -Dgpg.publicKeyring=$ION_GPG_KEYRING release:prepare"
                             env.RELEASE_COMMIT = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
                         } else {
-                            sh 'mvn clean install -B $DISABLE_DOWNLOAD_PROGRESS_OPTS'
+                            sh "mvn clean install -B $DISABLE_DOWNLOAD_PROGRESS_OPTS"
                         }
                     }
                 }
@@ -104,17 +104,17 @@ pipeline {
         }
         stage('Owasp') {
             steps {
-                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'cx-oss-settings', mavenOpts: '${LINUX_MVN_RANDOM}') {
+                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'cx-oss-settings', mavenOpts: "${LINUX_MVN_RANDOM}") {
                     // If this build is not a pull request, run full owasp scan. Otherwise run incremental scan
                     script {
                         if (params.RELEASE == true) {
                             sh "git checkout ${env.RELEASE_TAG}"
                         }
                         if (env.CHANGE_ID == null) {
-                            sh 'mvn install -B -Powasp -DskipTests -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS'
+                            sh "mvn install -B -Powasp -DskipTests -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS"
                             archiveArtifacts allowEmptyArchive: true, artifacts: '**/dependency-check-report.*', onlyIfSuccessful: true
                         } else {
-                            sh 'mvn install -B -Powasp -DskipTests -Dgib.enabled=true -Dgib.referenceBranch=/refs/remotes/origin/$CHANGE_TARGET -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS'
+                            sh "mvn install -B -Powasp -DskipTests -Dgib.enabled=true -Dgib.referenceBranch=/refs/remotes/origin/$CHANGE_TARGET -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS"
                             archiveArtifacts allowEmptyArchive: true, artifacts: '**/dependency-check-report.*', onlyIfSuccessful: true
                         }
                     }
@@ -128,10 +128,10 @@ pipeline {
                     sh "git checkout ${env.RELEASE_COMMIT}"
 
                     //sshagent doesn't seem to work in multi-branch pipelines so the following hack is needed
-                    sh 'git remote add ssh-origin git@github.com:connexta/${env.GITHUB_REPONAME}.git'
-                    withCredentials([sshUserPrivateKey(credentialsId: '${env.GITHUB_KEY}', keyFileVariable: 'GITHUB_KEY')]) {
-                        sh 'echo ssh -i $GITHUB_KEY -l git -o StrictHostKeyChecking=no \\"\\$@\\" > run_ssh.sh'
-                        sh 'chmod +x run_ssh.sh'
+                    sh "git remote add ssh-origin git@github.com:connexta/${env.GITHUB_REPONAME}.git"
+                    withCredentials([sshUserPrivateKey(credentialsId: "${env.GITHUB_KEY}", keyFileVariable: 'GITHUB_KEY')]) {
+                        sh "echo ssh -i $GITHUB_KEY -l git -o StrictHostKeyChecking=no \"\$@\" > run_ssh.sh"
+                        sh "chmod +x run_ssh.sh"
                         withEnv(["GIT_SSH=${WORKSPACE}/run_ssh.sh"]) {
                             sh "git push ssh-origin HEAD:${env.BRANCH_NAME} && git push ssh-origin ${env.RELEASE_TAG}"
                         }
@@ -161,13 +161,13 @@ pipeline {
                     }
                 }
 
-                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'cx-oss-settings', mavenOpts: '${LINUX_MVN_RANDOM}') {
-                    sh 'mvn javadoc:aggregate -B -DskipTests -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS'
+                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'cx-oss-settings', mavenOpts: "${LINUX_MVN_RANDOM}") {
+                    sh "mvn javadoc:aggregate -B -DskipTests -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS"
                     script {
                         if(params.RELEASE == true) {
-                            sh 'mvn deploy -B -DskipTests -DretryFailedDeploymentCount=10 -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS -Dgpg.secretKeyring=$ION_GPG_KEYRING -Dgpg.publicKeyring=$ION_GPG_KEYRING' -Prelease
+                            sh "mvn deploy -B -DskipTests -DretryFailedDeploymentCount=10 -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS -Dgpg.secretKeyring=$ION_GPG_KEYRING -Dgpg.publicKeyring=$ION_GPG_KEYRING" -Prelease
                         } else {
-                            sh 'mvn deploy -B -DskipTests -DretryFailedDeploymentCount=10 -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS'
+                            sh "mvn deploy -B -DskipTests -DretryFailedDeploymentCount=10 -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS"
                         }
                     }
                 }
