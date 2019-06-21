@@ -122,20 +122,16 @@ pipeline {
             }
         }
         stage('Release Tag') {
-            when { expression { params.RELEASE == true } }
+            when {
+                allOf {
+                    expression { params.RELEASE == true }
+                    expression { env.BRANCH_NAME ==~ /((?:\d*\.)?\d.x|master)/ }
+                }
+            }
             steps {
-                script {
-                    sh "git checkout ${env.RELEASE_COMMIT}"
-
-                    //sshagent doesn't seem to work in multi-branch pipelines so the following hack is needed
-                    sh "git remote add ssh-origin git@github.com:connexta/${env.GITHUB_REPONAME}.git"
-                    withCredentials([sshUserPrivateKey(credentialsId: "${env.GITHUB_KEY}", keyFileVariable: 'GITHUB_KEY')]) {
-                        sh "echo ssh -i $GITHUB_KEY -l git -o StrictHostKeyChecking=no \"\$@\" > run_ssh.sh"
-                        sh "chmod +x run_ssh.sh"
-                        withEnv(["GIT_SSH=${WORKSPACE}/run_ssh.sh"]) {
-                            sh "git push ssh-origin HEAD:${env.BRANCH_NAME} && git push ssh-origin ${env.RELEASE_TAG}"
-                        }
-                    }
+                sh "git checkout ${env.BRANCH_NAME}"
+                sshagent(credentials: ["${GITHUB_KEY}"]) {
+                    sh "git push origin ${env.BRANCH_NAME} && git push origin ${env.RELEASE_TAG}"
                 }
             }
         }
