@@ -21,7 +21,7 @@ pipeline {
         COVERAGE_EXCLUSIONS = '**/test/**/*,**/itests/**/*,**/*Test*,**/*.txt,**/*.xml'
         GITHUB_USERNAME = 'connexta'
         GITHUB_REPONAME = 'ion-transformation-api'
-        GITHUB_KEY = 'ion-transformation-api-github-key'
+        GITHUB_KEY = 'cxlorebot-github-ssh-key'
     }
     parameters {
             booleanParam(name: 'RELEASE', defaultValue: false, description: 'Perform Release?')
