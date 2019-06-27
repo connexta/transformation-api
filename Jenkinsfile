@@ -21,7 +21,7 @@ pipeline {
         COVERAGE_EXCLUSIONS = '**/test/**/*,**/itests/**/*,**/*Test*,**/*.txt,**/*.xml'
         GITHUB_USERNAME = 'connexta'
         GITHUB_REPONAME = 'ion-transformation-api'
-        GITHUB_KEY = 'ion-transformation-api-github-key'
+        GITHUB_KEY = 'ion-transformation-mdang'
     }
     parameters {
             booleanParam(name: 'RELEASE', defaultValue: false, description: 'Perform Release?')
@@ -131,6 +131,7 @@ pipeline {
             steps {
                 sh "git checkout ${env.BRANCH_NAME}"
                 sshagent(credentials: ["${GITHUB_KEY}"]) {
+                    sh "git remote set-url origin git@github.com:connexta/ion-transformation-api.git"
                     sh "git push origin ${env.BRANCH_NAME} && git push origin ${env.RELEASE_TAG}"
                 }
             }
