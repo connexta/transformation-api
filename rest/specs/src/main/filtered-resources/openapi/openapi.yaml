@@ -200,8 +200,9 @@ components:
       properties:
         location:
           type: string
+          format: uri
           description: >
-            The location of the ingested product. This URL must support HTTP GET at location/{productId} to retrieve
+            The URI of the ingested product. This URI must support HTTP GET at location/{productId} to retrieve
             the product and HTTP PUT with attachment at location/{productId}/{metadataType} to store metadata.
           minLength: 1
           maxLength: 2048
