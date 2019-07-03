@@ -165,7 +165,7 @@ pipeline {
                     sh "mvn javadoc:aggregate -B -DskipTests -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS"
                     script {
                         if(params.RELEASE == true) {
-                            sh "mvn deploy -DskipTests -DretryFailedDeploymentCount=10 -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS -Dgpg.secretKeyring=$ION_GPG_KEYRING -Dgpg.publicKeyring=$ION_GPG_KEYRING -Dgpg.passphraseServerId=\"ion-signing\" -Prelease"
+                            sh "mvn deploy -B -DskipTests -DretryFailedDeploymentCount=10 -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS -Dgpg.secretKeyring=$ION_GPG_KEYRING -Dgpg.publicKeyring=$ION_GPG_KEYRING -Dgpg.passphraseServerId=\"ion-signing\""
                         } else {
                             sh "mvn deploy -B -DskipTests -DretryFailedDeploymentCount=10 -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS"
                         }
