@@ -20,14 +20,14 @@
     <parent>
         <groupId>com.connexta.transformation</groupId>
         <artifactId>transformation-api-rest-servers</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
 
     <name>Transformation Rest Spring Boot Application</name>
 
     <groupId>com.connexta.transformation</groupId>
     <artifactId>transformation-api-rest-spring-boot</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <dependencies>
         <dependency>
