@@ -202,8 +202,9 @@ components:
           type: string
           format: uri
           description: >
-            The URI of the ingested product. This URI must support HTTP GET at location/{productId} to retrieve
-            the product and HTTP PUT with attachment at location/{productId}/{metadataType} to store metadata.
+            The URI of the product to transform. This URI must support HTTP GET at location to retrieve
+            the product and HTTP PUT with attachment at location/metadata/{metadataType} to store
+            metadata where {metadataType} is restricted to alphanumeric characters.
           minLength: 1
           maxLength: 2048
           example: https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3
@@ -232,6 +233,13 @@ components:
           minLength: 1
           maxLength: 255
           example: 30f14c6c1fc85cba12bfd093aa8f90e999
+        statusUri:
+          type: string
+          format: uri
+          description: The status URI for the new request.
+          minLength: 1
+          maxLength: 2048
+          example: https://www.example.com/30f14c6c1fc85cba12bfd093aa8f90e999/status
         message:
           type: string
           description: A message stating that the request has been accepted.
