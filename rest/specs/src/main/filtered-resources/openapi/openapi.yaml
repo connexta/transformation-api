@@ -70,10 +70,6 @@ components:
       headers:
         'Content-Version':
           $ref: '#/components/headers/ContentVersion'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/TransformResponse'
     BadRequest:
       description: The client message could not be understood by the server due to invalid format or syntax.
       headers:
@@ -220,32 +216,6 @@ components:
           description: The size, in bytes, of the ingested product.
           minimum: 1
           example: 2147483648
-    TransformResponse:
-      description: Transformation response message.
-      type: object
-      required:
-        - id
-        - message
-      properties:
-        id:
-          type: string
-          description: The unique identifier for the request.
-          minLength: 1
-          maxLength: 255
-          example: 30f14c6c1fc85cba12bfd093aa8f90e999
-        statusUri:
-          type: string
-          format: uri
-          description: The status URI for the new request.
-          minLength: 1
-          maxLength: 2048
-          example: https://www.example.com/30f14c6c1fc85cba12bfd093aa8f90e999/status
-        message:
-          type: string
-          description: A message stating that the request has been accepted.
-          minLength: 1
-          maxLength: 1000
-          example: The request with ID 30f14c6c1fc85cba12bfd093aa8f90e999 has been accepted for processing.
     ErrorResponse:
       description: Error response message.
       type: object

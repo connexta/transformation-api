@@ -14,7 +14,6 @@
 package com.connexta.transformation;
 
 import com.connexta.transformation.rest.models.TransformRequest;
-import com.connexta.transformation.rest.models.TransformResponse;
 
 /**
  * Implementations of the {@code TransformationService} interface provide a mechanism to extract
@@ -22,9 +21,6 @@ import com.connexta.transformation.rest.models.TransformResponse;
  */
 public interface TransformationService {
 
-  /**
-   * @param request request information about the input to be transformed
-   * @return a response stating that a request has been accepted for processing
-   */
-  TransformResponse transform(TransformRequest request);
+  /** @param request request information about the input to be transformed */
+  void transform(TransformRequest request);
 }
