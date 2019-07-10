@@ -70,10 +70,6 @@ components:
       headers:
         'Content-Version':
           $ref: '#/components/headers/ContentVersion'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/TransformResponse'
     BadRequest:
       description: The client message could not be understood by the server due to invalid format or syntax.
       headers:
@@ -194,32 +190,20 @@ components:
       description: Transformation request.
       type: object
       required:
-        - id
-        - stagedLocation
-        - productLocation
+        - location
         - mimeType
         - bytes
-        - callbackUrl
       properties:
-        id:
+        location:
           type: string
-          description: The unique identifier for a request.
-          minLength: 1
-          maxLength: 255
-          pattern: '^[a-zA-Z0-9]*$'
-          example: 30f14c6c1fc85cba12bfd093aa8f90e3
-        stagedLocation:
-          type: string
-          description: The temporary location of the ingested product.
+          format: uri
+          description: >
+            The URI of the product to transform. This URI must support HTTP GET at location to retrieve
+            the product and HTTP PUT with attachment at location/metadata/{metadataType} to store
+            metadata where {metadataType} is restricted to alphanumeric characters.
           minLength: 1
           maxLength: 2048
-          example: https://bucket.s3.amazonaws.com
-        productLocation:
-          type: string
-          description: The final location of the ingested product.
-          minLength: 1
-          maxLength: 2048
-          example: https://bucket.s3.amazonaws.com
+          example: https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3
         mimeType:
           type: string
           description: The mime type of the ingested product.
@@ -232,31 +216,6 @@ components:
           description: The size, in bytes, of the ingested product.
           minimum: 1
           example: 2147483648
-        callbackUrl:
-          type: string
-          description: The URL to call for each completed transformation and for the final completed transformation message.
-          minLength: 1
-          maxLength: 2048
-          example: https://www.example.com/mis
-    TransformResponse:
-      description: Transformation response message.
-      type: object
-      required:
-        - id
-        - message
-      properties:
-        id:
-          type: string
-          description: The unique identifier for the request.
-          minLength: 1
-          maxLength: 255
-          example: 30f14c6c1fc85cba12bfd093aa8f90e999
-        message:
-          type: string
-          description: A message stating that the request has been accepted.
-          minLength: 1
-          maxLength: 1000
-          example: The request with ID 30f14c6c1fc85cba12bfd093aa8f90e999 has been accepted for processing.
     ErrorResponse:
       description: Error response message.
       type: object
