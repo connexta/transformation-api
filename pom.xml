@@ -95,7 +95,7 @@
         <openapi.generator.plugin.version>4.0.3</openapi.generator.plugin.version>
         <release.plugin.version>2.5.3</release.plugin.version>
         <resources.plugin.version>3.1.0</resources.plugin.version>
-        <source.plugin.version>3.0.1</source.plugin.version>
+        <source.plugin.version>3.1.0</source.plugin.version>
         <surefire.plugin.version>2.22.2</surefire.plugin.version>
         <gpg-plugin.version>1.6</gpg-plugin.version>
         <dependency.check.maven.plugin.version>5.0.0-M3</dependency.check.maven.plugin.version>
