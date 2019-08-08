@@ -196,7 +196,6 @@ components:
       properties:
         location:
           type: string
-          format: uri
           description: >
             The URI of the product to transform. This URI must support HTTP GET at location to retrieve
             the product and HTTP PUT with attachment at location/metadata/{metadataType} to store
