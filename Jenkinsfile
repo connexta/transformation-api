@@ -81,7 +81,7 @@ pipeline {
                 }
             }
             steps {
-                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'cx-internal', mavenOpts: "${LINUX_MVN_RANDOM}") {
+                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'ion-maven-settings', mavenOpts: "${LINUX_MVN_RANDOM}") {
                       sh "mvn install -B -DskipTests $DISABLE_DOWNLOAD_PROGRESS_OPTS"
                       sh "mvn clean install -B -Dgib.enabled=true -Dgib.referenceBranch=/refs/remotes/origin/$CHANGE_TARGET $DISABLE_DOWNLOAD_PROGRESS_OPTS"
                 }
@@ -90,7 +90,7 @@ pipeline {
         stage('Full Build') {
             when { expression { env.CHANGE_ID == null } }
             steps {
-                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'cx-internal', mavenOpts: "${LINUX_MVN_RANDOM}") {
+                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'ion-maven-settings', mavenOpts: "${LINUX_MVN_RANDOM}") {
                     script {
                         if (params.RELEASE == true) {
                             sh "mvn -B -Dtag=${env.RELEASE_TAG} -DreleaseVersion=${env.RELEASE_VERSION} -DdevelopmentVersion=${env.NEXT_VERSION} -Dgpg.secretKeyring=$ION_GPG_KEYRING -Dgpg.publicKeyring=$ION_GPG_KEYRING release:prepare"
@@ -104,7 +104,7 @@ pipeline {
         }
         stage('Owasp') {
             steps {
-                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'cx-internal', mavenOpts: "${LINUX_MVN_RANDOM}") {
+                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'ion-maven-settings', mavenOpts: "${LINUX_MVN_RANDOM}") {
                     // If this build is not a pull request, run full owasp scan. Otherwise run incremental scan
                     script {
                         if (params.RELEASE == true) {
@@ -161,7 +161,7 @@ pipeline {
                     }
                 }
 
-                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'cx-internal', mavenOpts: "${LINUX_MVN_RANDOM}") {
+                withMaven(maven: 'Maven 3.5.4', jdk: 'jdk11', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'ion-maven-settings', mavenOpts: "${LINUX_MVN_RANDOM}") {
                     sh "mvn javadoc:aggregate -B -DskipTests -nsu $DISABLE_DOWNLOAD_PROGRESS_OPTS"
                     script {
                         if(params.RELEASE == true) {
