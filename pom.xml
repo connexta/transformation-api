@@ -32,7 +32,7 @@
 
     <groupId>com.connexta.transformation</groupId>
     <artifactId>transformation-api</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.1.2</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -92,7 +92,7 @@
         <url>https://github.com/connexta/transformation-api</url>
         <connection>scm:git:https://github.com/connexta/transformation-api.git</connection>
         <developerConnection>scm:git:https://github.com/connexta/transformation-api.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>ion-transformation-api-0.1.2</tag>
     </scm>
 
     <distributionManagement>
