@@ -97,11 +97,11 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>ion-snapshots</id>
+            <id>snapshots</id>
             <url>http://artifacts.codice.org/content/repositories/ion-snapshots/</url>
         </snapshotRepository>
         <repository>
-            <id>ion-releases</id>
+            <id>releases</id>
             <url>https://artifacts.codice.org/content/repositories/ion-releases/</url>
         </repository>
     </distributionManagement>
