@@ -17,7 +17,7 @@ info:
   version: ${project.version}
   title: Transformation API Specification
   description: >
-    The Transformation API allows products to be transformed into discovery metadata and other supporting products.
+    The Transformation API allows files to be transformed into discovery metadata and other supporting products.
   contact:
     name: Connexta
   license:
@@ -33,7 +33,7 @@ paths:
       - $ref: '#/components/parameters/AcceptVersion'
     post:
       summary: Transformation request
-      description: A request to transform a product into discovery metadata and other supporting products.
+      description: A request to transform a file into discovery metadata and other supporting products.
       operationId: transform
       tags:
         - transform
@@ -58,7 +58,7 @@ paths:
 components:
   requestBodies:
     TransformRequest:
-      description: A request to transform a product into discovery metadata and other supporting products.
+      description: A request to transform a file into discovery metadata and other supporting products.
       required: true
       content:
         application/json:
@@ -142,9 +142,9 @@ components:
       name: Accept-Version
       description: >
         The API version used by the client to produce the REST message. The client must accept
-        responses marked with any minor versions after this one. This implies that all future
-        minor versions of the message are backward compatible with all previous minor versions of
-        the same message.
+        responses marked with any minor versions after this one. This implies that all future minor
+        versions of the message are backward compatible with all previous minor versions of the same
+        message.
       required: true
       schema:
         $ref: '#/components/schemas/Version'
@@ -187,34 +187,36 @@ components:
       pattern: '^([1-9]([0-9]+)?)\.(0|([1-9]([0-9]+)?))(\.(0|([1-9]([0-9]+)?))(-.*)?)?$'
       example: 1.2, 2.4.3, 0.2.5-SNAPSHOT
     TransformRequest:
-      description: Transformation request.
       type: object
       required:
         - location
         - mimeType
-        - bytes
+        - metacardLocation
       properties:
         location:
-          type: string
           description: >
-            The URI of the product to transform. This URI must support HTTP GET at location to retrieve
-            the product and HTTP PUT with attachment at location/metadata/{metadataType} to store
-            metadata where {metadataType} is restricted to alphanumeric characters.
+            This URI must support HTTP GET to retrieve the file and HTTP PUT with attachment at
+            location/metadata/{metadataType} to store metadata, where {metadataType} is restricted
+            to alphanumeric characters.
+          type: string
+          format: uri
           minLength: 1
           maxLength: 2048
           example: https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3
         mimeType:
           type: string
-          description: The mime type of the ingested product.
+          description: The mime type of the file that can be retrieved at the location.
           minLength: 1
           maxLength: 255
           example: application/xml
-        bytes:
-          type: integer
-          format: int64
-          description: The size, in bytes, of the ingested product.
-          minimum: 1
-          example: 2147483648
+        metacardLocation:
+          description: >
+            This URI must support HTTP GET to retrieve the metacard xml.
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 2048
+          example: https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3
     ErrorResponse:
       description: Error response message.
       type: object
@@ -246,8 +248,8 @@ components:
           format: int32
           description: >
             An optional and more specific code corresponding to the error (specific codes need to be
-            documented as part of the API operation). This code allows a given category of
-            errors (e.g. 501: Not Implemented) to be more specific as to why.
+            documented as part of the API operation). This code allows a given category of errors
+            (e.g. 501: Not Implemented) to be more specific as to why.
         error:
           type: string
           description: The corresponding HTTP reason phrase.
