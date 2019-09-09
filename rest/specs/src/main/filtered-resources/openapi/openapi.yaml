@@ -199,7 +199,6 @@ components:
             location/metadata/{metadataType} to store metadata, where {metadataType} is restricted
             to alphanumeric characters.
           type: string
-          format: uri
           minLength: 1
           maxLength: 2048
           example: https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3
@@ -213,7 +212,6 @@ components:
           description: >
             This URI must support HTTP GET to retrieve the metacard xml.
           type: string
-          format: uri
           minLength: 1
           maxLength: 2048
           example: https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3
