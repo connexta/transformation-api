@@ -52,7 +52,7 @@
         <guava.version>28.0-jre</guava.version>
         <hibernate.validator.version>6.0.17.Final</hibernate.validator.version>
         <jackson.version>2.9.9</jackson.version>
-        <jackson.databind.version>2.9.9.3</jackson.databind.version>
+        <jackson.databind.version>2.10.0.pr2</jackson.databind.version>
         <jackson.databind.nullable.version>0.2.0</jackson.databind.nullable.version>
         <javax.servlet.version>4.0.1</javax.servlet.version>
         <okio.version>1.13.0</okio.version>
@@ -484,8 +484,8 @@
                         <googleJavaFormat>
                             <version>1.7</version>
                         </googleJavaFormat>
-                        <trimTrailingWhitespace />
-                        <removeUnusedImports />
+                        <trimTrailingWhitespace/>
+                        <removeUnusedImports/>
                     </java>
                 </configuration>
                 <executions>
