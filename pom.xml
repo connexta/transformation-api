@@ -71,7 +71,7 @@
         <directory.maven.plugin.version>0.3.1</directory.maven.plugin.version>
         <faisafe.plugin.version>3.0.0-M3</faisafe.plugin.version>
         <jar.plugin.version>3.1.2</jar.plugin.version>
-        <javadoc.plugin.version>3.1.0</javadoc.plugin.version>
+        <javadoc.plugin.version>3.1.1</javadoc.plugin.version>
         <maven-servicemix-depends.version>1.4.0</maven-servicemix-depends.version>
         <openapi.generator.plugin.version>4.1.0</openapi.generator.plugin.version>
         <release.plugin.version>2.5.3</release.plugin.version>
