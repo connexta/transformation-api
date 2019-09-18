@@ -1,5 +1,7 @@
 # Transformation API
-
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=connexta/ion-transformation-api)](https://dependabot.com)
+[![Known Vulnerabilities](https://snyk.io//test/github/connexta/ion-transformation-api/badge.svg)](https://snyk.io//test/github/connexta/ion-transformation-api)
+[![CircleCI](https://circleci.com/gh/connexta/ion-transformation-api.svg?style=svg)](https://circleci.com/gh/connexta/ion-transformation-api)
 ## Building
 ### What you need ###
 * [Install Java SE 11](https://jdk.java.net/java-se-ri/11).
