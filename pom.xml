@@ -57,7 +57,7 @@
         <javax.servlet.version>4.0.1</javax.servlet.version>
         <okio.version>1.13.0</okio.version>
         <spring.version>5.1.9.RELEASE</spring.version>
-        <spring.boot.version>2.1.7.RELEASE</spring.boot.version>
+        <spring.boot.version>2.1.8.RELEASE</spring.boot.version>
         <springfox.version>2.9.2</springfox.version>
         <swagger.version>1.5.22</swagger.version>
         <swagger.v3.version>2.0.8</swagger.v3.version>
