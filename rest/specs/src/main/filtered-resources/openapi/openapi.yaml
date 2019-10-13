@@ -32,7 +32,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/AcceptVersion'
     post:
-      summary: Transformation request
+      summary: Submit transformation request
       description: A request to transform a file into discovery metadata and other supporting products.
       operationId: transform
       tags:
@@ -54,7 +54,127 @@ paths:
           $ref: '#/components/responses/NotImplemented'
         default:
           $ref: '#/components/responses/DefaultError'
-
+  /transform/{TransformId}:
+    parameters:
+      - $ref: '#/components/parameters/TransformId'
+    get:
+      summary: Poll transformation request status
+      description: >
+        After posting a transformation request, the client can use the returned URI to poll for the transform's completion at this endpoint.
+      operationId: poll
+      tags:
+        - transform
+      responses:
+        '200':
+          description: The transform is still in progress.
+          headers:
+            Content-Version:
+              $ref: '#/components/headers/ContentVersion'
+        '201':
+          description: Transform complete. Returning metadata locations.
+          headers:
+            Content-Version:
+              $ref: '#/components/headers/ContentVersion'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    format:
+                      $ref: '#/components/schemas/MetadataFormat'
+                    location:
+                      description: The URI for where the metadata is located.
+                      type: string
+                      format: uri
+                      minLength: 1
+                      maxLength: 2048
+                      example: 'https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          description: The transformation failed.
+          headers:
+            Content-Version:
+              $ref: '#/components/headers/ContentVersion'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        'default':
+          $ref: '#/components/responses/DefaultError'
+    delete:
+      summary: Delete the transformation request
+      description: >
+        After retrieving the output of the transformation, the client should call this endpoint to remove the request.
+      operationId: delete
+      tags:
+        - transform
+      responses:
+        '204':
+          description: The transformation request was successfully deleted.
+          headers:
+            Content-Version:
+              $ref: '#/components/headers/ContentVersion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        'default':
+          $ref: '#/components/responses/DefaultError'
+  /transform/{TransformId}/{MetadataFormat}:
+    parameters:
+      - $ref: '#/components/parameters/TransformId'
+      - name: MetadataFormat
+        in: path
+        description: The metadata format ID.
+        required: true
+        schema:
+          $ref: '#/components/schemas/MetadataFormat'
+    get:
+      summary: Retrieve metadata.
+      description: Used to retrieve the metadata for a transform request.
+      operationId: retrieve
+      tags:
+        - transform
+      responses:
+        '200':
+          description: Successfully retrieved.
+          headers:
+            Content-Version:
+              $ref: '#/components/headers/ContentVersion'
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: The metadata contents.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+        'default':
+          $ref: '#/components/responses/DefaultError'
 components:
   requestBodies:
     TransformRequest:
@@ -68,12 +188,14 @@ components:
     Accepted:
       description: The transformation request was accepted for processing.
       headers:
-        'Content-Version':
+        Content-Version:
           $ref: '#/components/headers/ContentVersion'
+        Location:
+          $ref: '#/components/headers/Location'
     BadRequest:
       description: The client message could not be understood by the server due to invalid format or syntax.
       headers:
-        'Content-Version':
+        Content-Version:
           $ref: '#/components/headers/ContentVersion'
       content:
         application/json:
@@ -82,7 +204,7 @@ components:
     Unauthorized:
       description: The client could not be authenticated.
       headers:
-        'Content-Version':
+        Content-Version:
           $ref: '#/components/headers/ContentVersion'
       content:
         application/json:
@@ -91,7 +213,16 @@ components:
     Forbidden:
       description: The client is not authorized.
       headers:
-        'Content-Version':
+        Content-Version:
+          $ref: '#/components/headers/ContentVersion'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The transform request could not be found.
+      headers:
+        Content-Version:
           $ref: '#/components/headers/ContentVersion'
       content:
         application/json:
@@ -100,7 +231,7 @@ components:
     InternalServerError:
       description: The server encountered an unexpected condition that prevented it from fulfilling the request.
       headers:
-        'Content-Version':
+        Content-Version:
           $ref: '#/components/headers/ContentVersion'
       content:
         application/json:
@@ -119,7 +250,7 @@ components:
 
         - 501004 - The provided minor version is not yet supported by the server
       headers:
-        'Content-Version':
+        Content-Version:
           $ref: '#/components/headers/ContentVersion'
       content:
         application/json:
@@ -129,7 +260,7 @@ components:
     DefaultError:
       description: Any other possible errors not currently known.
       headers:
-        'Content-Version':
+        Content-Version:
           $ref: '#/components/headers/ContentVersion'
       content:
         application/json:
@@ -158,7 +289,18 @@ components:
         dev:
           value: '1.2.0-SNAPSHOT'
           summary: A development version
-
+    TransformId:
+      name: TransformId
+      in: path
+      description: >
+        The ID of the transform request.
+      required: true
+      schema:
+        type: string
+        minLength: 32
+        maxLength: 32
+        pattern: '^[0-9a-zA-Z]+$'
+        example: 098asdfjh9as8dfh09sdfh0as9d8fha3
   headers:
     ContentVersion:
       description: >
@@ -177,7 +319,15 @@ components:
         dev:
           value: '1.2.0-SNAPSHOT'
           summary: A development version
-
+    Location:
+      description: >
+        The URI that can be used to poll for readiness of the transformed file's discovery metadata and other supporting products.
+      required: true
+      schema:
+        type: string
+        format: uri
+        minLength: 1
+        maxLength: 500
   schemas:
     Version:
       description: Version number.
@@ -186,6 +336,10 @@ components:
       maxLength: 80
       pattern: '^([1-9]([0-9]+)?)\.(0|([1-9]([0-9]+)?))(\.(0|([1-9]([0-9]+)?))(-.*)?)?$'
       example: 1.2, 2.4.3, 0.2.5-SNAPSHOT
+    MetadataFormat:
+      description: The format of the metadata.
+      type: string
+      enum: [irm]
     TransformRequest:
       type: object
       required:
