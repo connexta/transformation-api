@@ -33,7 +33,7 @@ paths:
       - $ref: '#/components/parameters/AcceptVersion'
     post:
       summary: Submit transformation request
-      description: A request to transform a file into discovery metadata and other supporting products.
+      description: A request to transform an intel resource into discovery metadata and other supporting products.
       operationId: transform
       tags:
         - transform
@@ -65,32 +65,10 @@ paths:
       tags:
         - transform
       responses:
-        '200':
-          description: The transform is still in progress.
-          headers:
-            Content-Version:
-              $ref: '#/components/headers/ContentVersion'
+        '204':
+          $ref: '#/components/responses/TransformationInProgress'
         '201':
-          description: Transform complete. Returning metadata locations.
-          headers:
-            Content-Version:
-              $ref: '#/components/headers/ContentVersion'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    format:
-                      $ref: '#/components/schemas/MetadataFormat'
-                    location:
-                      description: The URI for where the metadata is located.
-                      type: string
-                      format: uri
-                      minLength: 1
-                      maxLength: 2048
-                      example: 'https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3'
+          $ref: '#/components/responses/MetadataInformationResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -100,14 +78,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
-          description: The transformation failed.
-          headers:
-            Content-Version:
-              $ref: '#/components/headers/ContentVersion'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/TransformationFailed'
         '501':
           $ref: '#/components/responses/NotImplemented'
         'default':
@@ -121,10 +92,7 @@ paths:
         - transform
       responses:
         '204':
-          description: The transformation request was successfully deleted.
-          headers:
-            Content-Version:
-              $ref: '#/components/headers/ContentVersion'
+          $ref: '#/components/responses/TransformationDeletedResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -137,15 +105,15 @@ paths:
           $ref: '#/components/responses/NotImplemented'
         'default':
           $ref: '#/components/responses/DefaultError'
-  /transform/{TransformId}/{MetadataFormat}:
+  /transform/{TransformId}/{MetadataType}:
     parameters:
       - $ref: '#/components/parameters/TransformId'
-      - name: MetadataFormat
+      - name: MetadataType
         in: path
         description: The metadata format ID.
         required: true
         schema:
-          $ref: '#/components/schemas/MetadataFormat'
+          $ref: '#/components/schemas/MetadataType'
     get:
       summary: Retrieve metadata.
       description: Used to retrieve the metadata for a transform request.
@@ -154,15 +122,7 @@ paths:
         - transform
       responses:
         '200':
-          description: Successfully retrieved.
-          headers:
-            Content-Version:
-              $ref: '#/components/headers/ContentVersion'
-          content:
-            text/plain:
-              schema:
-                type: string
-                description: The metadata contents.
+          $ref: '#/components/responses/MetadataContentResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -192,6 +152,51 @@ components:
           $ref: '#/components/headers/ContentVersion'
         Location:
           $ref: '#/components/headers/Location'
+    MetadataInformationResponse:
+      description: Transform complete. Returning metadata locations.
+      headers:
+        Content-Version:
+          $ref: '#/components/headers/ContentVersion'
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/MetadataInformation'
+    TransformationDeletedResponse:
+      description: The transformation request was successfully deleted.
+      headers:
+        Content-Version:
+          $ref: '#/components/headers/ContentVersion'
+    TransformationInProgress:
+      description: The transformation is in progress.
+      headers:
+        Content-Version:
+          $ref: '#/components/headers/ContentVersion'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TransformationFailed:
+      description: The transformation failed.
+      headers:
+        Content-Version:
+          $ref: '#/components/headers/ContentVersion'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    MetadataContentResponse:
+      description: Successfully retrieved.
+      headers:
+        Content-Version:
+          $ref: '#/components/headers/ContentVersion'
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary
+            description: The metadata contents.
     BadRequest:
       description: The client message could not be understood by the server due to invalid format or syntax.
       headers:
@@ -336,8 +341,25 @@ components:
       maxLength: 80
       pattern: '^([1-9]([0-9]+)?)\.(0|([1-9]([0-9]+)?))(\.(0|([1-9]([0-9]+)?))(-.*)?)?$'
       example: 1.2, 2.4.3, 0.2.5-SNAPSHOT
-    MetadataFormat:
-      description: The format of the metadata.
+    MetadataInformation:
+      type: object
+      properties:
+        metadataType:
+          $ref: '#/components/schemas/MetadataType'
+        location:
+          description: The URI for where the metadata is located.
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 2048
+          example: 'https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3'
+        timestamp:
+          type: string
+          format: date-time
+          description: The server time when the metadata was generated.
+          example: 2019-05-09T14:47:13.101+0000
+    MetadataType:
+      description: The type of metadata.
       type: string
       enum: [irm]
     TransformRequest:
