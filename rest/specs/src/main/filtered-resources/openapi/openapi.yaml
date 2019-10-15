@@ -65,9 +65,7 @@ paths:
       tags:
         - transform
       responses:
-        '204':
-          $ref: '#/components/responses/TransformationInProgress'
-        '201':
+        '200':
           $ref: '#/components/responses/MetadataInformationResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -77,8 +75,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/TransformationFailed'
         '501':
           $ref: '#/components/responses/NotImplemented'
         'default':
@@ -153,39 +149,19 @@ components:
         Location:
           $ref: '#/components/headers/Location'
     MetadataInformationResponse:
-      description: Transform complete. Returning metadata locations.
+      description: Information on each of the metadata types that came out of the transformation.
       headers:
         Content-Version:
           $ref: '#/components/headers/ContentVersion'
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/MetadataInformation'
+            $ref: '#/components/schemas/MetadataInformationResponse'
     TransformationDeletedResponse:
       description: The transformation request was successfully deleted.
       headers:
         Content-Version:
           $ref: '#/components/headers/ContentVersion'
-    TransformationInProgress:
-      description: The transformation is in progress.
-      headers:
-        Content-Version:
-          $ref: '#/components/headers/ContentVersion'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    TransformationFailed:
-      description: The transformation failed.
-      headers:
-        Content-Version:
-          $ref: '#/components/headers/ContentVersion'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
     MetadataContentResponse:
       description: Successfully retrieved.
       headers:
@@ -341,27 +317,48 @@ components:
       maxLength: 80
       pattern: '^([1-9]([0-9]+)?)\.(0|([1-9]([0-9]+)?))(\.(0|([1-9]([0-9]+)?))(-.*)?)?$'
       example: 1.2, 2.4.3, 0.2.5-SNAPSHOT
+    MetadataInformationResponse:
+      type: object
+      required:
+        - transformationStatus
+        - metadataInformations
+      properties:
+        transformationStatus:
+          $ref: '#/components/schemas/Status'
+        metadataInformations:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataInformation'
     MetadataInformation:
       type: object
+      required:
+        - metadataType
+        - transformationStatus
       properties:
         metadataType:
           $ref: '#/components/schemas/MetadataType'
+        transformationStatus:
+          $ref: '#/components/schemas/Status'
         location:
-          description: The URI for where the metadata is located.
+          description: The URI for where the metadata is located. NOTE this will not be populated until the transformationStatus is Complete.
           type: string
           format: uri
           minLength: 1
           maxLength: 2048
           example: 'https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3'
-        timestamp:
+        transformedTimestamp:
           type: string
           format: date-time
-          description: The server time when the metadata was generated.
+          description: The server time when the metadata was generated. NOTE this will not be populated until the transformationStatus is Complete.
           example: 2019-05-09T14:47:13.101+0000
     MetadataType:
       description: The type of metadata.
       type: string
       enum: [irm]
+    Status:
+      description: The status of the operation.
+      type: string
+      enum: [In Progress, Done, Failed]
     TransformRequest:
       type: object
       required:
