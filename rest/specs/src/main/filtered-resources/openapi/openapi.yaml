@@ -66,7 +66,7 @@ paths:
         - transform
       responses:
         '200':
-          $ref: '#/components/responses/MetadataInformationResponse'
+          $ref: '#/components/responses/TransformationResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -148,7 +148,7 @@ components:
           $ref: '#/components/headers/ContentVersion'
         Location:
           $ref: '#/components/headers/Location'
-    MetadataInformationResponse:
+    TransformationResponse:
       description: Information on each of the metadata types that came out of the transformation.
       headers:
         Content-Version:
@@ -167,6 +167,11 @@ components:
       headers:
         Content-Version:
           $ref: '#/components/headers/ContentVersion'
+        Content-Length:
+          required: true
+          schema:
+            description: The length, in bytes, of the response body.
+            type: integer
       content:
         application/octet-stream:
           schema:
@@ -278,10 +283,6 @@ components:
       required: true
       schema:
         type: string
-        minLength: 32
-        maxLength: 32
-        pattern: '^[0-9a-zA-Z]+$'
-        example: 098asdfjh9as8dfh09sdfh0as9d8fha3
   headers:
     ContentVersion:
       description: >
@@ -302,13 +303,11 @@ components:
           summary: A development version
     Location:
       description: >
-        The URI that can be used to poll for readiness of the transformed file's discovery metadata and other supporting products.
+        The URI that can be used to retrieve the status of the transformation request.
       required: true
       schema:
         type: string
         format: uri
-        minLength: 1
-        maxLength: 500
   schemas:
     Version:
       description: Version number.
@@ -325,6 +324,9 @@ components:
       properties:
         transformationStatus:
           $ref: '#/components/schemas/Status'
+        errorMessage:
+          description: An optional error message in the case the transformation failed.
+          $ref: '#/components/schemas/ErrorMessage'
         metadataInformations:
           type: array
           items:
@@ -339,12 +341,13 @@ components:
           $ref: '#/components/schemas/MetadataType'
         transformationStatus:
           $ref: '#/components/schemas/Status'
+        errorMessage:
+          description: An optional error message in the case the transformation failed.
+          $ref: '#/components/schemas/ErrorMessage'
         location:
           description: The URI for where the metadata is located. NOTE this will not be populated until the transformationStatus is Complete.
           type: string
           format: uri
-          minLength: 1
-          maxLength: 2048
           example: 'https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3'
         transformedTimestamp:
           type: string
@@ -387,7 +390,7 @@ components:
           format: uri
           example: https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3
     ErrorResponse:
-      description: Error response message.
+      description: Error response.
       type: object
       required:
         - timestamp
@@ -424,6 +427,14 @@ components:
           description: The corresponding HTTP reason phrase.
           example: Bad Request
           minLength: 1
+        errorMessage:
+          $ref: '#/components/schemas/ErrorMessage'
+    ErrorMessage:
+      type: object
+      description: Error message.
+      required:
+        - message
+      properties:
         message:
           type: string
           description: Specific information about the error.
@@ -432,5 +443,5 @@ components:
         details:
           type: array
           items:
-           type: string
+            type: string
           description: Optional detailed information about the error.
