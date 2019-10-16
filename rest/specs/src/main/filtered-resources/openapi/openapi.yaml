@@ -167,10 +167,15 @@ components:
       headers:
         Content-Version:
           $ref: '#/components/headers/ContentVersion'
+        Content-Type:
+          required: true
+          schema:
+            description: The content type of the response body contents
+            type: string
         Content-Length:
           required: true
           schema:
-            description: The length, in bytes, of the response body.
+            description: The length, in bytes, of the response body contents.
             type: integer
       content:
         application/octet-stream:
@@ -369,13 +374,21 @@ components:
         - mimeType
         - metacardLocation
       properties:
-        location:
+        currentLocation:
           description: >
             This URI must support HTTP GET to retrieve the file and HTTP PUT with attachment at
             location/metadata/{metadataType} to store metadata, where {metadataType} is restricted
             to alphanumeric characters.
           type: string
           format: uri
+          example: https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3
+        finalLocation:
+          description: >
+            This is a URI that will only be used by the Transform service to put on the transformed
+            metadata for the "resource download location".
+          type: string
+          minLength: 1
+          maxLength: 2048
           example: https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3
         mimeType:
           type: string
