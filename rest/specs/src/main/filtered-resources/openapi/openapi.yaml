@@ -336,7 +336,7 @@ components:
             An array of the information for each metadata type that will be provided from the
             transformation request. NOTE this could be empty.
           type: array
-          minItems: 1
+          minItems: 0
           uniqueItems: true
           items:
             $ref: '#/components/schemas/MetadataInformation'
@@ -374,7 +374,7 @@ components:
     TransformRequest:
       type: object
       required:
-        - location
+        - currentLocation
         - metacardLocation
         - finalLocation
       properties:
