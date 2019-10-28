@@ -21,6 +21,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -95,15 +96,17 @@ public interface TransformApiPoll {
   default ResponseEntity<TransformationPollResponse> poll(
       @ApiParam(value = "The ID of the transform request. ", required = true)
           @PathVariable("TransformId")
-          String transformId)
+          String transformId,
+      HttpServletRequest request)
       throws Exception {
     getRequest()
         .ifPresent(
-            request -> {
-              for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            nativeWebRequest -> {
+              for (MediaType mediaType :
+                  MediaType.parseMediaTypes(nativeWebRequest.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                   ApiUtil.setExampleResponse(
-                      request,
+                      nativeWebRequest,
                       "application/json",
                       "{  \"errorMessage\" : {    \"details\" : [ \"details\", \"details\" ],    \"message\" : \"Validation failed for object='systemInfo'.\"  },  \"metadataInformations\" : [ {    \"transformedTimestamp\" : \"2000-01-23T04:56:07.000+00:00\",    \"errorMessage\" : {      \"details\" : [ \"details\", \"details\" ],      \"message\" : \"Validation failed for object='systemInfo'.\"    },    \"location\" : \"https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3\"  }, {    \"transformedTimestamp\" : \"2000-01-23T04:56:07.000+00:00\",    \"errorMessage\" : {      \"details\" : [ \"details\", \"details\" ],      \"message\" : \"Validation failed for object='systemInfo'.\"    },    \"location\" : \"https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3\"  } ]}");
                   break;
