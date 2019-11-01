@@ -59,8 +59,6 @@
         <spring.version>5.1.9.RELEASE</spring.version>
         <spring.boot.version>2.1.7.RELEASE</spring.boot.version>
         <springfox.version>2.9.2</springfox.version>
-        <swagger.version>1.5.22</swagger.version>
-        <swagger.v3.version>2.0.8</swagger.v3.version>
         <validation.api.version>2.0.1.Final</validation.api.version>
 
         <!-- Plugin dependency properties -->
@@ -73,10 +71,10 @@
         <jar.plugin.version>3.1.2</jar.plugin.version>
         <javadoc.plugin.version>3.1.1</javadoc.plugin.version>
         <maven-servicemix-depends.version>1.4.0</maven-servicemix-depends.version>
-        <openapi.generator.plugin.version>4.1.0</openapi.generator.plugin.version>
         <release.plugin.version>2.5.3</release.plugin.version>
         <resources.plugin.version>3.1.0</resources.plugin.version>
         <source.plugin.version>3.1.0</source.plugin.version>
+        <spotless.maven.plugin.version>1.25.1</spotless.maven.plugin.version>
         <surefire.plugin.version>2.22.2</surefire.plugin.version>
         <gpg-plugin.version>1.6</gpg-plugin.version>
         <dependency.check.maven.plugin.version>5.2.1</dependency.check.maven.plugin.version>
@@ -179,41 +177,9 @@
                 <version>${jackson.databind.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.openapitools</groupId>
-                <artifactId>jackson-databind-nullable</artifactId>
-                <version>${jackson.databind.nullable.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate.validator.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-core</artifactId>
-                <version>${swagger.v3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-jaxrs2</artifactId>
-                <version>${swagger.v3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-jaxrs</artifactId>
-                <version>${swagger.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <!-- This is a much older version of the javax.ws.rs API -->
-                        <groupId>javax.ws.rs</groupId>
-                        <artifactId>jsr311-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${swagger.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
@@ -334,11 +300,6 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.openapitools</groupId>
-                    <artifactId>openapi-generator-maven-plugin</artifactId>
-                    <version>${openapi.generator.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
@@ -473,31 +434,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.diffplug.spotless</groupId>
-                <artifactId>spotless-maven-plugin</artifactId>
-                <version>1.23.0</version>
-                <configuration>
-                    <java>
-                        <licenseHeader>
-                            <file>${highest-basedir}/headerJava.txt</file>
-                        </licenseHeader>
-                        <googleJavaFormat>
-                            <version>1.7</version>
-                        </googleJavaFormat>
-                        <trimTrailingWhitespace/>
-                        <removeUnusedImports/>
-                    </java>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
@@ -561,10 +497,61 @@
                 </plugins>
             </reporting>
         </profile>
+        <profile>
+            <id>staticAnalysis</id>
+            <activation>
+                <property>
+                    <name>skipStatic</name>
+                    <value>!true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.coveo</groupId>
+                        <artifactId>fmt-maven-plugin</artifactId>
+                        <version>2.9</version>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.diffplug.spotless</groupId>
+                        <artifactId>spotless-maven-plugin</artifactId>
+                        <version>${spotless.maven.plugin.version}</version>
+                        <configuration>
+                            <java>
+                                <licenseHeader>
+                                    <file>${highest-basedir}/headerJava.txt</file>
+                                </licenseHeader>
+                                <googleJavaFormat>
+                                    <version>1.7</version>
+                                </googleJavaFormat>
+                                <trimTrailingWhitespace />
+                                <removeUnusedImports />
+                            </java>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <modules>
-        <module>rest</module>
-        <module>java</module>
+        <module>models</module>
+        <module>spring</module>
     </modules>
 </project>
