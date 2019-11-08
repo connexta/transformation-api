@@ -19,10 +19,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ResponseHeader;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -68,7 +72,11 @@ public interface TransformApiDelete {
                 "The requested API version is not supported and therefore not implemented. Possible codes reported are: - 501001 - Unable to parse *Accept-Version* - 501002 - The provided major version is no longer supported - 501003 - The provided major version is not yet supported by the server - 501004 - The provided minor version is not yet supported by the server ",
             response = ErrorResponse.class),
         @ApiResponse(
-            code = 200,
+            code = 503,
+            message = "The service is unavailable. Try again later.",
+            response = ErrorResponse.class),
+        @ApiResponse(
+            code = 500,
             message = "Any other possible errors not currently known.",
             response = ErrorResponse.class)
       })
@@ -76,7 +84,20 @@ public interface TransformApiDelete {
       value = "/transform/{TransformId}",
       produces = {"application/json"},
       method = RequestMethod.DELETE)
+  @ResponseHeader(
+      name = "Content-Version",
+      description =
+          "The API version used by the server to produce the REST message. The server will accept messages for any minor versions prior to this one.",
+      response = String.class)
   default ResponseEntity<Void> delete(
+      @ApiParam(
+              value =
+                  "The API version used by the client to produce the REST message. The client must accept responses marked with any minor versions after this one. This implies that all future minor versions of the message are backward compatible with all previous minor versions of the same message. ",
+              required = true)
+          @RequestHeader(value = "Accept-Version", required = true)
+          @NotNull
+          @Pattern(regexp = "^\\d+.\\d+.\\d+(-SNAPSHOT)?$")
+          String acceptVersion,
       @ApiParam(value = "The ID of the transform request. ", required = true)
           @PathVariable("TransformId")
           String transformId)

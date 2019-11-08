@@ -13,6 +13,8 @@
  */
 package com.connexta.transformation.rest.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import java.net.URL;
@@ -23,6 +25,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /** MetadataInformation */
+@JsonInclude(Include.NON_NULL)
 public class MetadataInformation {
   @JsonProperty("metadataType")
   private String metadataType;

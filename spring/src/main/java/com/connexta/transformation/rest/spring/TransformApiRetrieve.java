@@ -19,11 +19,17 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ResponseHeader;
+import java.time.OffsetDateTime;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -45,7 +51,27 @@ public interface TransformApiRetrieve {
       })
   @ApiResponses(
       value = {
-        @ApiResponse(code = 200, message = "Successfully retrieved.", response = Resource.class),
+        @ApiResponse(
+            code = 200,
+            message = "Successfully retrieved.",
+            response = Resource.class,
+            responseHeaders = {
+              @ResponseHeader(
+                  name = "Last-Modified",
+                  description =
+                      "The time at which this piece of metadata finished being generated.",
+                  response = OffsetDateTime.class),
+              @ResponseHeader(
+                  name = "Content-Type",
+                  description =
+                      "An optional header indicating the content type of the response body contents.",
+                  response = String.class),
+              @ResponseHeader(
+                  name = "Content-Length",
+                  description =
+                      "An optional header indicating the length, in bytes, of the response body contents.",
+                  response = Long.class)
+            }),
         @ApiResponse(
             code = 400,
             message =
@@ -69,20 +95,39 @@ public interface TransformApiRetrieve {
                 "The requested API version is not supported and therefore not implemented. Possible codes reported are: - 501001 - Unable to parse *Accept-Version* - 501002 - The provided major version is no longer supported - 501003 - The provided major version is not yet supported by the server - 501004 - The provided minor version is not yet supported by the server ",
             response = ErrorResponse.class),
         @ApiResponse(
-            code = 200,
+            code = 503,
+            message = "The service is unavailable. Try again later.",
+            response = ErrorResponse.class),
+        @ApiResponse(
+            code = 500,
             message = "Any other possible errors not currently known.",
             response = ErrorResponse.class)
       })
   @RequestMapping(
       value = "/transform/{TransformId}/{MetadataType}",
-      produces = {"application/octet-stream", "application/json"},
+      produces = {"application/json", "*/*"},
       method = RequestMethod.GET)
+  @ResponseHeader(
+      name = "Content-Version",
+      description =
+          "The API version used by the server to produce the REST message. The server will accept messages for any minor versions prior to this one.",
+      response = String.class)
   default ResponseEntity<Resource> retrieve(
+      @ApiParam(
+              value =
+                  "The API version used by the client to produce the REST message. The client must accept responses marked with any minor versions after this one. This implies that all future minor versions of the message are backward compatible with all previous minor versions of the same message. ",
+              required = true)
+          @RequestHeader(value = "Accept-Version", required = true)
+          @NotNull
+          @Pattern(regexp = "^\\d+.\\d+.\\d+(-SNAPSHOT)?$")
+          String acceptVersion,
       @ApiParam(value = "The ID of the transform request. ", required = true)
           @PathVariable("TransformId")
+          @Size(min = 1, max = 80)
           String transformId,
-      @ApiParam(value = "The metadata format ID.", required = true, allowableValues = "\"irm\"")
+      @ApiParam(value = "The metadata format ID.", required = true)
           @PathVariable("MetadataType")
+          @Size(min = 1, max = 80)
           String metadataType)
       throws Exception {
     return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
