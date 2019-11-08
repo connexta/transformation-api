@@ -20,7 +20,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ResponseHeader;
+import java.net.URL;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -50,7 +54,13 @@ public interface TransformApiTransform {
         @ApiResponse(
             code = 201,
             message =
-                "The transformation request was accepted for processing. The URI for polling the status is returned in the Location header of the response. "),
+                "The transformation request was created for processing. The URI for polling the status is returned in the Location header of the response. ",
+            responseHeaders =
+                @ResponseHeader(
+                    name = "Location",
+                    description =
+                        "A URL that can be used to retrieve the status of the transformation request.",
+                    response = URL.class)),
         @ApiResponse(
             code = 400,
             message =
@@ -75,7 +85,7 @@ public interface TransformApiTransform {
                 "The requested API version is not supported and therefore not implemented. Possible codes reported are: - 501001 - Unable to parse *Accept-Version* - 501002 - The provided major version is no longer supported - 501003 - The provided major version is not yet supported by the server - 501004 - The provided minor version is not yet supported by the server ",
             response = ErrorResponse.class),
         @ApiResponse(
-            code = 200,
+            code = 500,
             message = "Any other possible errors not currently known.",
             response = ErrorResponse.class)
       })
@@ -84,12 +94,19 @@ public interface TransformApiTransform {
       produces = {"application/json"},
       consumes = {"application/json"},
       method = RequestMethod.POST)
+  @ResponseHeader(
+      name = "Content-Version",
+      description =
+          "The API version used by the server to produce the REST message. The server will accept messages for any minor versions prior to this one.",
+      response = String.class)
   default ResponseEntity<Void> transform(
       @ApiParam(
               value =
                   "The API version used by the client to produce the REST message. The client must accept responses marked with any minor versions after this one. This implies that all future minor versions of the message are backward compatible with all previous minor versions of the same message. ",
               required = true)
           @RequestHeader(value = "Accept-Version", required = true)
+          @NotNull
+          @Pattern(regexp = "^\\d+.\\d+.\\d+(-SNAPSHOT)?$")
           String acceptVersion,
       @ApiParam(
               value =
