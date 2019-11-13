@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ResponseHeader;
+import java.util.UUID;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
@@ -104,7 +105,7 @@ public interface TransformApiDelete {
           String acceptVersion,
       @ApiParam(value = "The ID of the transform request. ", required = true)
           @PathVariable("TransformId")
-          String transformId)
+          UUID transformId)
       throws Exception {
     return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
   }

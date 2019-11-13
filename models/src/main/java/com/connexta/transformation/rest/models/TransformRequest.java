@@ -71,7 +71,7 @@ public class TransformRequest {
    * @return currentLocation
    */
   @ApiModelProperty(
-      example = "https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3",
+      example = "https://www.example.com/mis/30f14c6c-1fc8-5cba-12bf-d093aa8f90e3",
       required = true,
       value =
           "This URL must support HTTP GET to retrieve the file. This MUST be available until the transformation request is \"Done\". ")
@@ -96,7 +96,7 @@ public class TransformRequest {
    * @return finalLocation
    */
   @ApiModelProperty(
-      example = "https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3",
+      example = "https://www.example.com/mis/30f14c6c-1fc8-5cba-12bf-d093aa8f90e3",
       required = true,
       value =
           "This URL will not actually be called by the Transform service. It will only be used by the Transform service to put in the transformed metadata for the \"resource download location\". ")
@@ -120,7 +120,7 @@ public class TransformRequest {
    * @return metacardLocation
    */
   @ApiModelProperty(
-      example = "https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3",
+      example = "https://www.example.com/mis/30f14c6c-1fc8-5cba-12bf-d093aa8f90e3",
       required = true,
       value = "This URL must support HTTP GET to retrieve the metacard xml. ")
   @NotNull
