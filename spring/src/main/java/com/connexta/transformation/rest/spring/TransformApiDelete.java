@@ -69,7 +69,11 @@ public interface TransformApiDelete {
         @ApiResponse(
             code = 501,
             message =
-                "The requested API version is not supported and therefore not implemented. Possible codes reported are: - 501001 - Unable to parse *Accept-Version* - 501002 - The provided major version is no longer supported - 501003 - The provided major version is not yet supported by the server - 501004 - The provided minor version is not yet supported by the server ",
+                "The requested API version is not supported and therefore not implemented. Possible codes reported are:"
+                    + "- 501001 - Unable to parse *Accept-Version*"
+                    + "- 501002 - The provided major version is no longer supported"
+                    + "- 501003 - The provided major version is not yet supported by the server"
+                    + "- 501004 - The provided minor version is not yet supported by the server",
             response = ErrorResponse.class),
         @ApiResponse(
             code = 503,

@@ -54,7 +54,7 @@ public interface TransformApiTransform {
         @ApiResponse(
             code = 201,
             message =
-                "The transformation request was created for processing. The URI for polling the status is returned in the Location header of the response. ",
+                "The transformation request was created for processing and a transformation object was created. The URL for polling the status is returned in the Location header of the response. ",
             responseHeaders =
                 @ResponseHeader(
                     name = "Location",
@@ -82,7 +82,11 @@ public interface TransformApiTransform {
         @ApiResponse(
             code = 501,
             message =
-                "The requested API version is not supported and therefore not implemented. Possible codes reported are: - 501001 - Unable to parse *Accept-Version* - 501002 - The provided major version is no longer supported - 501003 - The provided major version is not yet supported by the server - 501004 - The provided minor version is not yet supported by the server ",
+                "The requested API version is not supported and therefore not implemented. Possible codes reported are:"
+                    + " - 501001 - Unable to parse *Accept-Version*"
+                    + " - 501002 - The provided major version is no longer supported "
+                    + " - 501003 - The provided major version is not yet supported by the server"
+                    + " - 501004 - The provided minor version is not yet supported by the server",
             response = ErrorResponse.class),
         @ApiResponse(
             code = 500,
