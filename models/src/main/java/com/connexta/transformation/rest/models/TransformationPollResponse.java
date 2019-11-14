@@ -22,10 +22,9 @@ import java.util.List;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /** TransformationPollResponse */
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(value = Include.NON_EMPTY, content = Include.NON_NULL)
 public class TransformationPollResponse {
   @JsonProperty("transformationStatus")
   private Status transformationStatus;
@@ -69,17 +68,14 @@ public class TransformationPollResponse {
 
   /**
    * An array of the information for each metadata type that will be provided from the
-   * transformation request. NOTE this could be empty.
+   * transformation request. NOTE this could be omitted if no metadata has been generated yet.
    *
    * @return metadataInformations
    */
   @ApiModelProperty(
-      required = true,
       value =
-          "An array of the information for each metadata type that will be provided from the transformation request. NOTE this could be empty. ")
-  @NotNull
+          "An array of the information for each metadata type that will be provided from the transformation request. NOTE this could be omitted if no metadata has been generated yet. ")
   @Valid
-  @Size(min = 0)
   public List<MetadataInformation> getMetadataInformations() {
     return metadataInformations;
   }

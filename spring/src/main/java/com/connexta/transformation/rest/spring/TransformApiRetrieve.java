@@ -21,6 +21,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ResponseHeader;
 import java.time.OffsetDateTime;
+import java.util.UUID;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -64,7 +65,7 @@ public interface TransformApiRetrieve {
               @ResponseHeader(
                   name = "Content-Type",
                   description =
-                      "An optional header indicating the content type of the response body contents.",
+                      "An header indicating the content type of the response body contents.",
                   response = String.class),
               @ResponseHeader(
                   name = "Content-Length",
@@ -92,7 +93,11 @@ public interface TransformApiRetrieve {
         @ApiResponse(
             code = 501,
             message =
-                "The requested API version is not supported and therefore not implemented. Possible codes reported are: - 501001 - Unable to parse *Accept-Version* - 501002 - The provided major version is no longer supported - 501003 - The provided major version is not yet supported by the server - 501004 - The provided minor version is not yet supported by the server ",
+                "The requested API version is not supported and therefore not implemented. Possible codes reported are:"
+                    + "- 501001 - Unable to parse *Accept-Version*"
+                    + "- 501002 - The provided major version is no longer supported"
+                    + "- 501003 - The provided major version is not yet supported by the server"
+                    + "- 501004 - The provided minor version is not yet supported by the server",
             response = ErrorResponse.class),
         @ApiResponse(
             code = 503,
@@ -123,8 +128,7 @@ public interface TransformApiRetrieve {
           String acceptVersion,
       @ApiParam(value = "The ID of the transform request. ", required = true)
           @PathVariable("TransformId")
-          @Size(min = 1, max = 80)
-          String transformId,
+          UUID transformId,
       @ApiParam(value = "The metadata format ID.", required = true)
           @PathVariable("MetadataType")
           @Size(min = 1, max = 80)

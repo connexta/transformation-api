@@ -17,10 +17,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import java.net.URL;
 import java.util.Objects;
+import java.util.UUID;
 import javax.validation.constraints.NotNull;
 
 /** TransformRequest */
 public class TransformRequest {
+  @JsonProperty("datasetId")
+  private UUID datasetId;
+
   @JsonProperty("currentLocation")
   private URL currentLocation;
 
@@ -29,6 +33,31 @@ public class TransformRequest {
 
   @JsonProperty("metacardLocation")
   private URL metacardLocation;
+
+  public TransformRequest datasetId(UUID datasetId) {
+    this.datasetId = datasetId;
+    return this;
+  }
+
+  /**
+   * A standard 36-character uuid identifying the dataset being transformed. It will be used by the
+   * Transformation service to put in the transformed metadata.
+   *
+   * @return the dataset id
+   */
+  @ApiModelProperty(
+      example = "e86b3f57-c282-4cad-aa93-d58ea1709b9c",
+      required = true,
+      value =
+          "A standard 36-character uuid identifying the dataset being transformed. It will be used by the Transformation service to put in the transformed metadata.")
+  @NotNull
+  public UUID getDatasetId() {
+    return datasetId;
+  }
+
+  public void setDatasetId(UUID datasetId) {
+    this.datasetId = datasetId;
+  }
 
   public TransformRequest currentLocation(URL currentLocation) {
     this.currentLocation = currentLocation;
@@ -42,7 +71,7 @@ public class TransformRequest {
    * @return currentLocation
    */
   @ApiModelProperty(
-      example = "https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3",
+      example = "https://www.example.com/mis/30f14c6c-1fc8-5cba-12bf-d093aa8f90e3",
       required = true,
       value =
           "This URL must support HTTP GET to retrieve the file. This MUST be available until the transformation request is \"Done\". ")
@@ -67,7 +96,7 @@ public class TransformRequest {
    * @return finalLocation
    */
   @ApiModelProperty(
-      example = "https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3",
+      example = "https://www.example.com/mis/30f14c6c-1fc8-5cba-12bf-d093aa8f90e3",
       required = true,
       value =
           "This URL will not actually be called by the Transform service. It will only be used by the Transform service to put in the transformed metadata for the \"resource download location\". ")
@@ -91,7 +120,7 @@ public class TransformRequest {
    * @return metacardLocation
    */
   @ApiModelProperty(
-      example = "https://www.example.com/mis/30f14c6c1fc85cba12bfd093aa8f90e3",
+      example = "https://www.example.com/mis/30f14c6c-1fc8-5cba-12bf-d093aa8f90e3",
       required = true,
       value = "This URL must support HTTP GET to retrieve the metacard xml. ")
   @NotNull

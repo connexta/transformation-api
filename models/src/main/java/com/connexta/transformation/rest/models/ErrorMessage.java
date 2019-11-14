@@ -27,7 +27,7 @@ import javax.validation.constraints.Size;
 
 /** Error message. */
 @ApiModel(description = "Error message.")
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(value = Include.NON_EMPTY, content = Include.NON_NULL)
 public class ErrorMessage {
   @JsonProperty("message")
   private String message;
