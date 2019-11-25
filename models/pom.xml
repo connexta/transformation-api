@@ -3,14 +3,14 @@
     <parent>
         <artifactId>transformation-api</artifactId>
         <groupId>com.connexta.transformation</groupId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <name>Transformation :: API :: Rest Models</name>
 
     <artifactId>transformation-api-rest-models</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
