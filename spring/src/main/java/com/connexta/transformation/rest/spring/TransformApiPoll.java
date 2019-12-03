@@ -65,7 +65,8 @@ public interface TransformApiPoll {
         @ApiResponse(
             code = 400,
             message =
-                "The client message could not be understood by the server due to invalid format or syntax.",
+                "The client message could not be understood by the server due to invalid format or syntax. Possible codes reported are:"
+                    + "- 400001 - No client version passed in",
             response = ErrorResponse.class),
         @ApiResponse(
             code = 401,
