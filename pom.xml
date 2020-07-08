@@ -55,7 +55,7 @@
         <jackson.databind.version>2.10.0.pr3</jackson.databind.version>
         <jackson.databind.nullable.version>0.2.0</jackson.databind.nullable.version>
         <javax.servlet.version>4.0.1</javax.servlet.version>
-        <okio.version>1.13.0</okio.version>
+        <okio.version>2.7.0</okio.version>
         <spring.version>5.2.3.RELEASE</spring.version>
         <spring.boot.version>2.2.4.RELEASE</spring.boot.version>
         <springfox.version>2.9.2</springfox.version>
